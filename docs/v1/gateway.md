@@ -88,3 +88,21 @@ To get started with the DocumentDB Gateway, follow these steps:
         --tls \
         --tlsAllowInvalidCertificates
     ```
+
+### Run locally
+To run the DocumentDB Gateway locally, use cargo
+
+2. **Run documentdb backend**:
+    See README.md for instructions on how to run the backend
+2. **Run the Gateway**:  Build the DocumentDB Gateway in the pg_documentdb_gw folder
+    ```bash
+    cd pg_documentdb_gw
+    ./scripts/build_and_start_gateway.sh -u <username> -p <password>
+    ```
+3. **Connect to the Gateway**: Use Mongosh to connect to the DocumentDB Gateway.
+    ```bash
+    mongosh localhost:10260 -u <username> -p <password> \
+        --authenticationMechanism SCRAM-SHA-256 \
+        --tls \
+        --tlsAllowInvalidCertificates
+    ```
