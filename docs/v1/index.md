@@ -5,15 +5,24 @@
 It supports seamless CRUD operations on BSON data types, full-text search, geospatial queries, and vector embeddings — all within the robust PostgreSQL ecosystem.
 
 
-## Get Start Here
+## 🛠️ Getting Started with DocumentDB
 
-[Introduction](v1/documentdb.md)
+Begin your journey with DocumentDB by exploring its architecture, supported data types, core operations, and advanced capabilities. This section provides a step-by-step guide to help you understand, build, and run applications using DocumentDB.
 
-[Prebuild Image](v1/prebuild-image.md)
 
-[Packaging](v1/packaging.md)
-
+[Introduction](v1/introduction.md)  
+[Architecture](v1/architecture.md)  
 [DocumentDB Gateway](v1/gateway.md)
+[Data Types](v1/data-types.md)  
+[CRUD Operations](v1/crud.md)  
+[Indexing](v1/indexing.md)  
+[Querying](v1/querying.md)  
+[Performance](v1/performance.md)  
+[Security](v1/security.md)  
+[Use Cases](v1/use-cases.md)  
+[Prebuild Image](v1/prebuild-image.md)  
+[Packaging](v1/packaging.md)  
+[FAQ](v1/faq.md)  
 
 ---
 
@@ -66,3 +75,26 @@ docker build -f .devcontainer/Dockerfile -t documentdb .
 docker run -v $(pwd):/home/documentdb/code -it documentdb /bin/bash
 make && sudo make install
 ```
+
+### How to Contribute
+
+To contribute, see these documents:
+
+- [Code of Conduct](./CODE_OF_CONDUCT.md)  
+- [Security](./SECURITY.md)  
+- [Contributing](./CONTRIBUTING.md)
+
+### Community
+
+- Please refer to page for contributing to our [Roadmap list](https://github.com/orgs/microsoft/projects/1407/views/1).
+- [FerretDB](https://github.com/FerretDB/FerretDB) integration allows using DocumentDB as backend engine.
+
+Contributors and users can join the [DocumentDB Discord channel in the Microsoft OSS server](https://aka.ms/documentdb_discord) for quick collaboration.
+
+### License
+
+**DocumentDB** is licensed under the MIT License. See [LICENSE](./LICENSE.txt) for details.
+
+### Trademarks
+
+This project may use trademarks or logos. Use of Microsoft trademarks must follow Microsoft’s [Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks). Use of third-party marks is subject to their policies.
