@@ -58,9 +58,10 @@ jobs:
           echo "BASE_VERSION=${{ github.event.inputs.base_version }}" >> $GITHUB_ENV
           echo "BASE_VERSION=${{ github.event.inputs.base_version }}"
         else
+          # Fetch the latest prerelease version from GitHub API
           LATEST_TAG=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/releases/latest" | \
-            jq -r '.tag_name // "${{ env.DEFAULT_BASE_VERSION }}"')
+            "https://api.github.com/repos/${{ github.repository }}/releases" | \
+            jq -r '[.[] | select(.prerelease == true)] | sort_by(.created_at) | reverse | .[0].tag_name // "${{ env.DEFAULT_BASE_VERSION }}"')
           if [[ "$LATEST_TAG" =~ ^v[0-9]+\.[0-9]+-[0-9]+$ ]]; then
             FORMATTED_VERSION=$(echo "$LATEST_TAG" | sed 's/^v//' | sed 's/-/./')
             echo "BASE_VERSION=$FORMATTED_VERSION" >> $GITHUB_ENV
@@ -99,10 +100,10 @@ jobs:
         elif [ -n "${{ github.event.inputs.manifest_tag }}" ]; then
           echo "MANIFEST_TAG=${{ github.event.inputs.manifest_tag }}" >> $GITHUB_ENV
         else
-          # Fetch the latest release version from GitHub API or use default
+          # Fetch the latest prerelease version from GitHub API or use default
           LATEST_TAG=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/releases/latest" | \
-            jq -r '.tag_name // "${{ env.DEFAULT_MANIFEST_TAG }}"')
+            "https://api.github.com/repos/${{ github.repository }}/releases" | \
+            jq -r '[.[] | select(.prerelease == true)] | sort_by(.created_at) | reverse | .[0].tag_name // "${{ env.DEFAULT_MANIFEST_TAG }}"')
           if [[ "$LATEST_TAG" =~ ^v[0-9]+\.[0-9]+-[0-9]+$ ]]; then
             FORMATTED_VERSION=$(echo "$LATEST_TAG" | sed 's/^v//' | sed 's/-/./')
             echo "MANIFEST_TAG=$FORMATTED_VERSION" >> $GITHUB_ENV
@@ -129,6 +130,6 @@ jobs:
         DIGEST=$(docker buildx imagetools inspect ghcr.io/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ env.MANIFEST_TAG }} \
           | awk '/^Digest:/ { print $2 }')
         cosign verify \
-          --certificate-identity-regexp "https://github.com/${{ github.repository }}/.github/workflows/build_gateway.yml@refs/heads/${{ github.ref_name }}" \
+          --certificate-identity-regexp "https://github.com/${{ github.repository }}/.github/workflows/build_gateway.yml@${{ github.ref }}" \
           --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
           ghcr.io/${{ github.repository }}/${{ env.IMAGE_NAME }}@${DIGEST}
