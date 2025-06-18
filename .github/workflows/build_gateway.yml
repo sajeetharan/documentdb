@@ -131,7 +131,16 @@ jobs:
       run: |
         DIGEST=$(docker buildx imagetools inspect ghcr.io/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ env.MANIFEST_TAG }} \
           | awk '/^Digest:/ { print $2 }')
+        
+        # Determine the expected certificate identity based on how the workflow was triggered
+        if [ "${{ github.event_name }}" = "release" ]; then
+          EXPECTED_IDENTITY="https://github.com/${{ github.repository }}/.github/workflows/build_gateway.yml@refs/tags/${{ github.event.release.tag_name }}"
+        else
+          EXPECTED_IDENTITY="https://github.com/${{ github.repository }}/.github/workflows/build_gateway.yml@${{ github.ref }}"
+        fi
+        
+        echo "Expected certificate identity: $EXPECTED_IDENTITY"
         cosign verify \
-          --certificate-identity-regexp ".*" \
-          --certificate-oidc-issuer ".*" \
+          --certificate-identity="$EXPECTED_IDENTITY" \
+          --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
           ghcr.io/${{ github.repository }}/${{ env.IMAGE_NAME }}@${DIGEST}
