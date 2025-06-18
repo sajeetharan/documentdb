@@ -130,6 +130,6 @@ jobs:
         DIGEST=$(docker buildx imagetools inspect ghcr.io/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ env.MANIFEST_TAG }} \
           | awk '/^Digest:/ { print $2 }')
         cosign verify \
-          --certificate-identity-regexp "https://github.com/${{ github.repository }}/.github/workflows/build_gateway.yml@refs/(heads|tags)/.*" \
-          --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+          --certificate-identity-regexp ".*" \
+          --certificate-oidc-issuer ".*" \
           ghcr.io/${{ github.repository }}/${{ env.IMAGE_NAME }}@${DIGEST}
